@@ -4,6 +4,8 @@
 CREATE TABLE supplier (
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
+  primary_contact varchar(150) NOT NULL,
+  email_address varchar(150) NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
