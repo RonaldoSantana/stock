@@ -680,7 +680,7 @@ func testWeightClassesSelect(t *testing.T) {
 }
 
 var (
-	weightClassDBTypes = map[string]string{`ID`: `int`, `Name`: `varchar`, `Unit`: `varchar`, `Value`: `decimal`}
+	weightClassDBTypes = map[string]string{`ID`: `int`, `Name`: `varchar`, `Unit`: `varchar`, `Value`: `double`}
 	_                  = bytes.MinRead
 )
 

@@ -5,7 +5,7 @@ CREATE TABLE `weight_class` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `unit` varchar(4) NOT NULL,
-  `value` decimal(15,8) NOT NULL DEFAULT '0.00000000',
+  `value` double(15,8) NOT NULL DEFAULT '0.00000000',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

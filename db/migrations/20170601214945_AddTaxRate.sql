@@ -5,7 +5,7 @@ CREATE TABLE `tax_rate` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `geo_zone_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL,
-  `rate` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `rate` double(15,4) NOT NULL DEFAULT '0.0000',
   `type` enum('value', 'percent') NOT NULL DEFAULT 'percent',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

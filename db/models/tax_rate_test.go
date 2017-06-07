@@ -639,7 +639,7 @@ func testTaxRatesSelect(t *testing.T) {
 }
 
 var (
-	taxRateDBTypes = map[string]string{`CreatedAt`: `timestamp`, `GeoZoneID`: `int`, `ID`: `int`, `Name`: `varchar`, `Rate`: `decimal`, `Type`: `enum('value','percent')`, `UpdatedAt`: `timestamp`}
+	taxRateDBTypes = map[string]string{`CreatedAt`: `timestamp`, `GeoZoneID`: `int`, `ID`: `int`, `Name`: `varchar`, `Rate`: `double`, `Type`: `enum('value','percent')`, `UpdatedAt`: `timestamp`}
 	_              = bytes.MinRead
 )
 

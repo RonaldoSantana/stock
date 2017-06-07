@@ -25,7 +25,7 @@ type TaxRate struct {
 	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
 	GeoZoneID int       `boil:"geo_zone_id" json:"geo_zone_id" toml:"geo_zone_id" yaml:"geo_zone_id"`
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Rate      string    `boil:"rate" json:"rate" toml:"rate" yaml:"rate"`
+	Rate      float64   `boil:"rate" json:"rate" toml:"rate" yaml:"rate"`
 	Type      string    `boil:"type" json:"type" toml:"type" yaml:"type"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`

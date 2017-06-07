@@ -957,7 +957,7 @@ func testProductsSelect(t *testing.T) {
 }
 
 var (
-	productDBTypes = map[string]string{`CreatedAt`: `timestamp`, `DeletedAt`: `timestamp`, `Height`: `decimal`, `ID`: `int`, `Image`: `varchar`, `LastCostPrice`: `decimal`, `Length`: `decimal`, `LengthClassID`: `int`, `Location`: `varchar`, `Minimum`: `int`, `Model`: `varchar`, `Name`: `varchar`, `Quantity`: `int`, `Shipping`: `tinyint`, `Sku`: `varchar`, `Status`: `enum('enabled','disabled')`, `Subtract`: `tinyint`, `SupplierID`: `int`, `TaxClassID`: `int`, `UpdatedAt`: `timestamp`, `Weight`: `decimal`, `WeightClassID`: `int`, `Width`: `decimal`}
+	productDBTypes = map[string]string{`CreatedAt`: `timestamp`, `DeletedAt`: `timestamp`, `Height`: `double`, `ID`: `int`, `Image`: `varchar`, `LastCost`: `double`, `Length`: `double`, `LengthClassID`: `int`, `Location`: `varchar`, `Minimum`: `int`, `Model`: `varchar`, `Name`: `varchar`, `Quantity`: `int`, `Shipping`: `tinyint`, `Sku`: `varchar`, `Status`: `enum('enabled','disabled')`, `Subtract`: `tinyint`, `SupplierID`: `int`, `TaxClassID`: `int`, `UpdatedAt`: `timestamp`, `Weight`: `double`, `WeightClassID`: `int`, `Width`: `double`}
 	_              = bytes.MinRead
 )
 

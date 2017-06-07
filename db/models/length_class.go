@@ -22,10 +22,10 @@ import (
 
 // LengthClass is an object representing the database table.
 type LengthClass struct {
-	ID    int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name  string `boil:"name" json:"name" toml:"name" yaml:"name"`
-	Unit  string `boil:"unit" json:"unit" toml:"unit" yaml:"unit"`
-	Value string `boil:"value" json:"value" toml:"value" yaml:"value"`
+	ID    int     `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name  string  `boil:"name" json:"name" toml:"name" yaml:"name"`
+	Unit  string  `boil:"unit" json:"unit" toml:"unit" yaml:"unit"`
+	Value float64 `boil:"value" json:"value" toml:"value" yaml:"value"`
 
 	R *lengthClassR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L lengthClassL  `boil:"-" json:"-" toml:"-" yaml:"-"`

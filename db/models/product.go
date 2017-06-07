@@ -32,13 +32,13 @@ type Product struct {
 	Image         null.String `boil:"image" json:"image,omitempty" toml:"image" yaml:"image,omitempty"`
 	SupplierID    int         `boil:"supplier_id" json:"supplier_id" toml:"supplier_id" yaml:"supplier_id"`
 	Shipping      int8        `boil:"shipping" json:"shipping" toml:"shipping" yaml:"shipping"`
-	LastCostPrice string      `boil:"last_cost_price" json:"last_cost_price" toml:"last_cost_price" yaml:"last_cost_price"`
+	LastCost      float64     `boil:"last_cost" json:"last_cost" toml:"last_cost" yaml:"last_cost"`
 	TaxClassID    int         `boil:"tax_class_id" json:"tax_class_id" toml:"tax_class_id" yaml:"tax_class_id"`
-	Weight        string      `boil:"weight" json:"weight" toml:"weight" yaml:"weight"`
+	Weight        float64     `boil:"weight" json:"weight" toml:"weight" yaml:"weight"`
 	WeightClassID int         `boil:"weight_class_id" json:"weight_class_id" toml:"weight_class_id" yaml:"weight_class_id"`
-	Length        string      `boil:"length" json:"length" toml:"length" yaml:"length"`
-	Width         string      `boil:"width" json:"width" toml:"width" yaml:"width"`
-	Height        string      `boil:"height" json:"height" toml:"height" yaml:"height"`
+	Length        float64     `boil:"length" json:"length" toml:"length" yaml:"length"`
+	Width         float64     `boil:"width" json:"width" toml:"width" yaml:"width"`
+	Height        float64     `boil:"height" json:"height" toml:"height" yaml:"height"`
 	LengthClassID int         `boil:"length_class_id" json:"length_class_id" toml:"length_class_id" yaml:"length_class_id"`
 	Subtract      int8        `boil:"subtract" json:"subtract" toml:"subtract" yaml:"subtract"`
 	Minimum       int         `boil:"minimum" json:"minimum" toml:"minimum" yaml:"minimum"`
@@ -63,9 +63,9 @@ type productR struct {
 type productL struct{}
 
 var (
-	productColumns               = []string{"id", "name", "model", "sku", "location", "quantity", "image", "supplier_id", "shipping", "last_cost_price", "tax_class_id", "weight", "weight_class_id", "length", "width", "height", "length_class_id", "subtract", "minimum", "status", "created_at", "updated_at", "deleted_at"}
+	productColumns               = []string{"id", "name", "model", "sku", "location", "quantity", "image", "supplier_id", "shipping", "last_cost", "tax_class_id", "weight", "weight_class_id", "length", "width", "height", "length_class_id", "subtract", "minimum", "status", "created_at", "updated_at", "deleted_at"}
 	productColumnsWithoutDefault = []string{"name", "model", "sku", "location", "image", "supplier_id", "tax_class_id", "deleted_at"}
-	productColumnsWithDefault    = []string{"id", "quantity", "shipping", "last_cost_price", "weight", "weight_class_id", "length", "width", "height", "length_class_id", "subtract", "minimum", "status", "created_at", "updated_at"}
+	productColumnsWithDefault    = []string{"id", "quantity", "shipping", "last_cost", "weight", "weight_class_id", "length", "width", "height", "length_class_id", "subtract", "minimum", "status", "created_at", "updated_at"}
 	productPrimaryKeyColumns     = []string{"id"}
 )
 

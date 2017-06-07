@@ -680,7 +680,7 @@ func testLengthClassesSelect(t *testing.T) {
 }
 
 var (
-	lengthClassDBTypes = map[string]string{`ID`: `int`, `Name`: `varchar`, `Unit`: `varchar`, `Value`: `decimal`}
+	lengthClassDBTypes = map[string]string{`ID`: `int`, `Name`: `varchar`, `Unit`: `varchar`, `Value`: `double`}
 	_                  = bytes.MinRead
 )
 
