@@ -1,0 +1,10 @@
+blacklist:
+  - goose_db_version
+schema: stock
+mysql:
+  dbname: stock
+  host: 127.0.0.1
+  port: 3306
+  user: stock_dba
+  pass: secret
+  sslmode: false
