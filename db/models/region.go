@@ -26,7 +26,7 @@ type Region struct {
 	CountryID int    `boil:"country_id" json:"country_id" toml:"country_id" yaml:"country_id"`
 	Name      string `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Code      string `boil:"code" json:"code" toml:"code" yaml:"code"`
-	Status    int8   `boil:"status" json:"status" toml:"status" yaml:"status"`
+	Status    bool   `boil:"status" json:"status" toml:"status" yaml:"status"`
 
 	R *regionR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L regionL  `boil:"-" json:"-" toml:"-" yaml:"-"`

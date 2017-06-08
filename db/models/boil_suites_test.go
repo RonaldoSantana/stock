@@ -23,6 +23,7 @@ func TestParent(t *testing.T) {
 	t.Run("Suppliers", testSuppliers)
 	t.Run("TaxClasses", testTaxClasses)
 	t.Run("TaxRates", testTaxRates)
+	t.Run("Users", testUsers)
 	t.Run("WeightClasses", testWeightClasses)
 }
 
@@ -37,6 +38,7 @@ func TestDelete(t *testing.T) {
 	t.Run("Suppliers", testSuppliersDelete)
 	t.Run("TaxClasses", testTaxClassesDelete)
 	t.Run("TaxRates", testTaxRatesDelete)
+	t.Run("Users", testUsersDelete)
 	t.Run("WeightClasses", testWeightClassesDelete)
 }
 
@@ -51,6 +53,7 @@ func TestQueryDeleteAll(t *testing.T) {
 	t.Run("Suppliers", testSuppliersQueryDeleteAll)
 	t.Run("TaxClasses", testTaxClassesQueryDeleteAll)
 	t.Run("TaxRates", testTaxRatesQueryDeleteAll)
+	t.Run("Users", testUsersQueryDeleteAll)
 	t.Run("WeightClasses", testWeightClassesQueryDeleteAll)
 }
 
@@ -65,6 +68,7 @@ func TestSliceDeleteAll(t *testing.T) {
 	t.Run("Suppliers", testSuppliersSliceDeleteAll)
 	t.Run("TaxClasses", testTaxClassesSliceDeleteAll)
 	t.Run("TaxRates", testTaxRatesSliceDeleteAll)
+	t.Run("Users", testUsersSliceDeleteAll)
 	t.Run("WeightClasses", testWeightClassesSliceDeleteAll)
 }
 
@@ -79,6 +83,7 @@ func TestExists(t *testing.T) {
 	t.Run("Suppliers", testSuppliersExists)
 	t.Run("TaxClasses", testTaxClassesExists)
 	t.Run("TaxRates", testTaxRatesExists)
+	t.Run("Users", testUsersExists)
 	t.Run("WeightClasses", testWeightClassesExists)
 }
 
@@ -93,6 +98,7 @@ func TestFind(t *testing.T) {
 	t.Run("Suppliers", testSuppliersFind)
 	t.Run("TaxClasses", testTaxClassesFind)
 	t.Run("TaxRates", testTaxRatesFind)
+	t.Run("Users", testUsersFind)
 	t.Run("WeightClasses", testWeightClassesFind)
 }
 
@@ -107,6 +113,7 @@ func TestBind(t *testing.T) {
 	t.Run("Suppliers", testSuppliersBind)
 	t.Run("TaxClasses", testTaxClassesBind)
 	t.Run("TaxRates", testTaxRatesBind)
+	t.Run("Users", testUsersBind)
 	t.Run("WeightClasses", testWeightClassesBind)
 }
 
@@ -121,6 +128,7 @@ func TestOne(t *testing.T) {
 	t.Run("Suppliers", testSuppliersOne)
 	t.Run("TaxClasses", testTaxClassesOne)
 	t.Run("TaxRates", testTaxRatesOne)
+	t.Run("Users", testUsersOne)
 	t.Run("WeightClasses", testWeightClassesOne)
 }
 
@@ -135,6 +143,7 @@ func TestAll(t *testing.T) {
 	t.Run("Suppliers", testSuppliersAll)
 	t.Run("TaxClasses", testTaxClassesAll)
 	t.Run("TaxRates", testTaxRatesAll)
+	t.Run("Users", testUsersAll)
 	t.Run("WeightClasses", testWeightClassesAll)
 }
 
@@ -149,6 +158,7 @@ func TestCount(t *testing.T) {
 	t.Run("Suppliers", testSuppliersCount)
 	t.Run("TaxClasses", testTaxClassesCount)
 	t.Run("TaxRates", testTaxRatesCount)
+	t.Run("Users", testUsersCount)
 	t.Run("WeightClasses", testWeightClassesCount)
 }
 
@@ -163,6 +173,7 @@ func TestHooks(t *testing.T) {
 	t.Run("Suppliers", testSuppliersHooks)
 	t.Run("TaxClasses", testTaxClassesHooks)
 	t.Run("TaxRates", testTaxRatesHooks)
+	t.Run("Users", testUsersHooks)
 	t.Run("WeightClasses", testWeightClassesHooks)
 }
 
@@ -187,6 +198,8 @@ func TestInsert(t *testing.T) {
 	t.Run("TaxClasses", testTaxClassesInsertWhitelist)
 	t.Run("TaxRates", testTaxRatesInsert)
 	t.Run("TaxRates", testTaxRatesInsertWhitelist)
+	t.Run("Users", testUsersInsert)
+	t.Run("Users", testUsersInsertWhitelist)
 	t.Run("WeightClasses", testWeightClassesInsert)
 	t.Run("WeightClasses", testWeightClassesInsertWhitelist)
 }
@@ -306,6 +319,7 @@ func TestReload(t *testing.T) {
 	t.Run("Suppliers", testSuppliersReload)
 	t.Run("TaxClasses", testTaxClassesReload)
 	t.Run("TaxRates", testTaxRatesReload)
+	t.Run("Users", testUsersReload)
 	t.Run("WeightClasses", testWeightClassesReload)
 }
 
@@ -320,6 +334,7 @@ func TestReloadAll(t *testing.T) {
 	t.Run("Suppliers", testSuppliersReloadAll)
 	t.Run("TaxClasses", testTaxClassesReloadAll)
 	t.Run("TaxRates", testTaxRatesReloadAll)
+	t.Run("Users", testUsersReloadAll)
 	t.Run("WeightClasses", testWeightClassesReloadAll)
 }
 
@@ -334,6 +349,7 @@ func TestSelect(t *testing.T) {
 	t.Run("Suppliers", testSuppliersSelect)
 	t.Run("TaxClasses", testTaxClassesSelect)
 	t.Run("TaxRates", testTaxRatesSelect)
+	t.Run("Users", testUsersSelect)
 	t.Run("WeightClasses", testWeightClassesSelect)
 }
 
@@ -348,6 +364,7 @@ func TestUpdate(t *testing.T) {
 	t.Run("Suppliers", testSuppliersUpdate)
 	t.Run("TaxClasses", testTaxClassesUpdate)
 	t.Run("TaxRates", testTaxRatesUpdate)
+	t.Run("Users", testUsersUpdate)
 	t.Run("WeightClasses", testWeightClassesUpdate)
 }
 
@@ -362,6 +379,7 @@ func TestSliceUpdateAll(t *testing.T) {
 	t.Run("Suppliers", testSuppliersSliceUpdateAll)
 	t.Run("TaxClasses", testTaxClassesSliceUpdateAll)
 	t.Run("TaxRates", testTaxRatesSliceUpdateAll)
+	t.Run("Users", testUsersSliceUpdateAll)
 	t.Run("WeightClasses", testWeightClassesSliceUpdateAll)
 }
 
@@ -376,5 +394,6 @@ func TestUpsert(t *testing.T) {
 	t.Run("Suppliers", testSuppliersUpsert)
 	t.Run("TaxClasses", testTaxClassesUpsert)
 	t.Run("TaxRates", testTaxRatesUpsert)
+	t.Run("Users", testUsersUpsert)
 	t.Run("WeightClasses", testWeightClassesUpsert)
 }

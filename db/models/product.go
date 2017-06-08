@@ -31,7 +31,7 @@ type Product struct {
 	Quantity      int         `boil:"quantity" json:"quantity" toml:"quantity" yaml:"quantity"`
 	Image         null.String `boil:"image" json:"image,omitempty" toml:"image" yaml:"image,omitempty"`
 	SupplierID    int         `boil:"supplier_id" json:"supplier_id" toml:"supplier_id" yaml:"supplier_id"`
-	Shipping      int8        `boil:"shipping" json:"shipping" toml:"shipping" yaml:"shipping"`
+	Shipping      bool        `boil:"shipping" json:"shipping" toml:"shipping" yaml:"shipping"`
 	LastCost      float64     `boil:"last_cost" json:"last_cost" toml:"last_cost" yaml:"last_cost"`
 	TaxClassID    int         `boil:"tax_class_id" json:"tax_class_id" toml:"tax_class_id" yaml:"tax_class_id"`
 	Weight        float64     `boil:"weight" json:"weight" toml:"weight" yaml:"weight"`
@@ -40,7 +40,7 @@ type Product struct {
 	Width         float64     `boil:"width" json:"width" toml:"width" yaml:"width"`
 	Height        float64     `boil:"height" json:"height" toml:"height" yaml:"height"`
 	LengthClassID int         `boil:"length_class_id" json:"length_class_id" toml:"length_class_id" yaml:"length_class_id"`
-	Subtract      int8        `boil:"subtract" json:"subtract" toml:"subtract" yaml:"subtract"`
+	Subtract      bool        `boil:"subtract" json:"subtract" toml:"subtract" yaml:"subtract"`
 	Minimum       int         `boil:"minimum" json:"minimum" toml:"minimum" yaml:"minimum"`
 	Status        string      `boil:"status" json:"status" toml:"status" yaml:"status"`
 	CreatedAt     time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`

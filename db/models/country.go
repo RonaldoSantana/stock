@@ -26,7 +26,7 @@ type Country struct {
 	Name     string `boil:"name" json:"name" toml:"name" yaml:"name"`
 	IsoCode2 string `boil:"iso_code_2" json:"iso_code_2" toml:"iso_code_2" yaml:"iso_code_2"`
 	IsoCode3 string `boil:"iso_code_3" json:"iso_code_3" toml:"iso_code_3" yaml:"iso_code_3"`
-	Status   int8   `boil:"status" json:"status" toml:"status" yaml:"status"`
+	Status   bool   `boil:"status" json:"status" toml:"status" yaml:"status"`
 
 	R *countryR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L countryL  `boil:"-" json:"-" toml:"-" yaml:"-"`

@@ -16,6 +16,7 @@
 # configuration files
 sqlboiler.yml
 dbconf.yml
+config.yml
 
 # IDE related
 .idea

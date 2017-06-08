@@ -1,0 +1,25 @@
+App: Stock
+Server: Go
+PageTitle: Stock Management
+Author: Ronaldo Santana
+Description: mydomain.com - New Zealand
+Copyright: Ronaldo Santana
+SiteName: Stock
+SiteDomain: mydomain.com
+SiteURL: http://www.mydomain.com
+SiteEmail: info@mydomain.com
+SiteFeedbackEmail: dev@mydomain.com
+SiteDevEmail: dev@mydomain.com
+SiteSupportEmail: support@mydomain.com
+SiteFromEmail: noreply@mydomain.com
+SiteIcon: message
+SiteCountry: New Zealand
+Homepage: home
+AdminPwd: password
+Secret: some_secret_random_string
+Host: http://localhost:8080
+HostTest: https://test.mystock.co.nz
+HostProd: https://www.mystock.co.nz
+PostmarkAPIKey: POSTMARK_API_TEST
+DBDriver: mysql
+DBDataSource: stock_dba:secret@tcp(127.0.0.0:3306)/stock?charset=utf8
