@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+	/*"os"
 	"fmt"
 	"flag"
 	"database/sql"
@@ -9,9 +9,25 @@ import (
 	
 	"github.com/rmsj/stock/db/models"
 	"github.com/rmsj/stock/app"
+	"net/http"
+	"github.com/julienschmidt/httprouter"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/satori/go.uuid"
+	"time"*/
+)
+
+
+
+import (
+	"fmt"
+	"flag"
+	"os"
+	
+	"github.com/rmsj/stock/app"
 )
 
 //go:generate sqlboiler -o "./db/models/" --tinyint-as-bool mysql
+/*
 
 func fake_main() {
 	
@@ -28,7 +44,7 @@ func fake_main() {
 	}
 	fmt.Println(count)
 }
-
+*/
 
 // App is the main application object
 var App app.Application

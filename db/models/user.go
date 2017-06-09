@@ -18,14 +18,22 @@ import (
 	"github.com/vattle/sqlboiler/queries"
 	"github.com/vattle/sqlboiler/queries/qm"
 	"github.com/vattle/sqlboiler/strmangle"
+	"gopkg.in/nullbio/null.v6"
 )
 
 // User is an object representing the database table.
 type User struct {
-	ID       int    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	FullName int    `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
-	Email    string `boil:"email" json:"email" toml:"email" yaml:"email"`
-	Password string `boil:"password" json:"password" toml:"password" yaml:"password"`
+	ID        string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	FirstName null.String `boil:"first_name" json:"first_name,omitempty" toml:"first_name" yaml:"first_name,omitempty"`
+	LastName  null.String `boil:"last_name" json:"last_name,omitempty" toml:"last_name" yaml:"last_name,omitempty"`
+	Avatar    null.String `boil:"avatar" json:"avatar,omitempty" toml:"avatar" yaml:"avatar,omitempty"`
+	Email     string      `boil:"email" json:"email" toml:"email" yaml:"email"`
+	Password  string      `boil:"password" json:"password" toml:"password" yaml:"password"`
+	Mobile    null.String `boil:"mobile" json:"mobile,omitempty" toml:"mobile" yaml:"mobile,omitempty"`
+	Status    string      `boil:"status" json:"status" toml:"status" yaml:"status"`
+	CreatedAt null.Time   `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
+	UpdatedAt null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	DeletedAt null.Time   `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -33,15 +41,16 @@ type User struct {
 
 // userR is where relationships are stored.
 type userR struct {
+	Sessions SessionSlice
 }
 
 // userL is where Load methods for each relationship are stored.
 type userL struct{}
 
 var (
-	userColumns               = []string{"id", "full_name", "email", "password"}
-	userColumnsWithoutDefault = []string{"full_name", "email", "password"}
-	userColumnsWithDefault    = []string{"id"}
+	userColumns               = []string{"id", "first_name", "last_name", "avatar", "email", "password", "mobile", "status", "created_at", "updated_at", "deleted_at"}
+	userColumnsWithoutDefault = []string{"id", "first_name", "last_name", "avatar", "email", "password", "mobile", "created_at", "updated_at", "deleted_at"}
+	userColumnsWithDefault    = []string{"status"}
 	userPrimaryKeyColumns     = []string{"id"}
 )
 
@@ -321,6 +330,186 @@ func (q userQuery) Exists() (bool, error) {
 	return count > 0, nil
 }
 
+// SessionsG retrieves all the session's session.
+func (o *User) SessionsG(mods ...qm.QueryMod) sessionQuery {
+	return o.Sessions(boil.GetDB(), mods...)
+}
+
+// Sessions retrieves all the session's session with an executor.
+func (o *User) Sessions(exec boil.Executor, mods ...qm.QueryMod) sessionQuery {
+	queryMods := []qm.QueryMod{
+		qm.Select("`a`.*"),
+	}
+
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("`a`.`user_id`=?", o.ID),
+	)
+
+	query := Sessions(exec, queryMods...)
+	queries.SetFrom(query.Query, "`session` as `a`")
+	return query
+}
+
+// LoadSessions allows an eager lookup of values, cached into the
+// loaded structs of the objects.
+func (userL) LoadSessions(e boil.Executor, singular bool, maybeUser interface{}) error {
+	var slice []*User
+	var object *User
+
+	count := 1
+	if singular {
+		object = maybeUser.(*User)
+	} else {
+		slice = *maybeUser.(*[]*User)
+		count = len(slice)
+	}
+
+	args := make([]interface{}, count)
+	if singular {
+		if object.R == nil {
+			object.R = &userR{}
+		}
+		args[0] = object.ID
+	} else {
+		for i, obj := range slice {
+			if obj.R == nil {
+				obj.R = &userR{}
+			}
+			args[i] = obj.ID
+		}
+	}
+
+	query := fmt.Sprintf(
+		"select * from `session` where `user_id` in (%s)",
+		strmangle.Placeholders(dialect.IndexPlaceholders, count, 1, 1),
+	)
+	if boil.DebugMode {
+		fmt.Fprintf(boil.DebugWriter, "%s\n%v\n", query, args)
+	}
+
+	results, err := e.Query(query, args...)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load session")
+	}
+	defer results.Close()
+
+	var resultSlice []*Session
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice session")
+	}
+
+	if len(sessionAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.Sessions = resultSlice
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.UserID {
+				local.R.Sessions = append(local.R.Sessions, foreign)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// AddSessionsG adds the given related objects to the existing relationships
+// of the user, optionally inserting them as new records.
+// Appends related to o.R.Sessions.
+// Sets related.R.User appropriately.
+// Uses the global database handle.
+func (o *User) AddSessionsG(insert bool, related ...*Session) error {
+	return o.AddSessions(boil.GetDB(), insert, related...)
+}
+
+// AddSessionsP adds the given related objects to the existing relationships
+// of the user, optionally inserting them as new records.
+// Appends related to o.R.Sessions.
+// Sets related.R.User appropriately.
+// Panics on error.
+func (o *User) AddSessionsP(exec boil.Executor, insert bool, related ...*Session) {
+	if err := o.AddSessions(exec, insert, related...); err != nil {
+		panic(boil.WrapErr(err))
+	}
+}
+
+// AddSessionsGP adds the given related objects to the existing relationships
+// of the user, optionally inserting them as new records.
+// Appends related to o.R.Sessions.
+// Sets related.R.User appropriately.
+// Uses the global database handle and panics on error.
+func (o *User) AddSessionsGP(insert bool, related ...*Session) {
+	if err := o.AddSessions(boil.GetDB(), insert, related...); err != nil {
+		panic(boil.WrapErr(err))
+	}
+}
+
+// AddSessions adds the given related objects to the existing relationships
+// of the user, optionally inserting them as new records.
+// Appends related to o.R.Sessions.
+// Sets related.R.User appropriately.
+func (o *User) AddSessions(exec boil.Executor, insert bool, related ...*Session) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.UserID = o.ID
+			if err = rel.Insert(exec); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE `session` SET %s WHERE %s",
+				strmangle.SetParamNames("`", "`", 0, []string{"user_id"}),
+				strmangle.WhereClause("`", "`", 0, sessionPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.DebugMode {
+				fmt.Fprintln(boil.DebugWriter, updateQuery)
+				fmt.Fprintln(boil.DebugWriter, values)
+			}
+
+			if _, err = exec.Exec(updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.UserID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &userR{
+			Sessions: related,
+		}
+	} else {
+		o.R.Sessions = append(o.R.Sessions, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &sessionR{
+				User: o,
+			}
+		} else {
+			rel.R.User = o
+		}
+	}
+	return nil
+}
+
 // UsersG retrieves all records.
 func UsersG(mods ...qm.QueryMod) userQuery {
 	return Users(boil.GetDB(), mods...)
@@ -333,12 +522,12 @@ func Users(exec boil.Executor, mods ...qm.QueryMod) userQuery {
 }
 
 // FindUserG retrieves a single record by ID.
-func FindUserG(id int, selectCols ...string) (*User, error) {
+func FindUserG(id string, selectCols ...string) (*User, error) {
 	return FindUser(boil.GetDB(), id, selectCols...)
 }
 
 // FindUserGP retrieves a single record by ID, and panics on error.
-func FindUserGP(id int, selectCols ...string) *User {
+func FindUserGP(id string, selectCols ...string) *User {
 	retobj, err := FindUser(boil.GetDB(), id, selectCols...)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -349,7 +538,7 @@ func FindUserGP(id int, selectCols ...string) *User {
 
 // FindUser retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindUser(exec boil.Executor, id int, selectCols ...string) (*User, error) {
+func FindUser(exec boil.Executor, id string, selectCols ...string) (*User, error) {
 	userObj := &User{}
 
 	sel := "*"
@@ -374,7 +563,7 @@ func FindUser(exec boil.Executor, id int, selectCols ...string) (*User, error) {
 }
 
 // FindUserP retrieves a single record by ID with an executor, and panics on error.
-func FindUserP(exec boil.Executor, id int, selectCols ...string) *User {
+func FindUserP(exec boil.Executor, id string, selectCols ...string) *User {
 	retobj, err := FindUser(exec, id, selectCols...)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -415,6 +604,16 @@ func (o *User) Insert(exec boil.Executor, whitelist ...string) error {
 	}
 
 	var err error
+	currTime := time.Now().In(boil.GetLocation())
+
+	if o.CreatedAt.Time.IsZero() {
+		o.CreatedAt.Time = currTime
+		o.CreatedAt.Valid = true
+	}
+	if o.UpdatedAt.Time.IsZero() {
+		o.UpdatedAt.Time = currTime
+		o.UpdatedAt.Valid = true
+	}
 
 	if err := o.doBeforeInsertHooks(exec); err != nil {
 		return err
@@ -469,26 +668,14 @@ func (o *User) Insert(exec boil.Executor, whitelist ...string) error {
 		fmt.Fprintln(boil.DebugWriter, vals)
 	}
 
-	result, err := exec.Exec(cache.query, vals...)
-
+	_, err = exec.Exec(cache.query, vals...)
 	if err != nil {
 		return errors.Wrap(err, "models: unable to insert into user")
 	}
 
-	var lastID int64
 	var identifierCols []interface{}
 
 	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	lastID, err = result.LastInsertId()
-	if err != nil {
-		return ErrSyncFail
-	}
-
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == userMapping["ID"] {
 		goto CacheNoHooks
 	}
 
@@ -548,6 +735,11 @@ func (o *User) UpdateP(exec boil.Executor, whitelist ...string) {
 // Update does not automatically update the record in case of default values. Use .Reload()
 // to refresh the records.
 func (o *User) Update(exec boil.Executor, whitelist ...string) error {
+	currTime := time.Now().In(boil.GetLocation())
+
+	o.UpdatedAt.Time = currTime
+	o.UpdatedAt.Valid = true
+
 	var err error
 	if err = o.doBeforeUpdateHooks(exec); err != nil {
 		return err
@@ -709,6 +901,14 @@ func (o *User) Upsert(exec boil.Executor, updateColumns []string, whitelist ...s
 	if o == nil {
 		return errors.New("models: no user provided for upsert")
 	}
+	currTime := time.Now().In(boil.GetLocation())
+
+	if o.CreatedAt.Time.IsZero() {
+		o.CreatedAt.Time = currTime
+		o.CreatedAt.Valid = true
+	}
+	o.UpdatedAt.Time = currTime
+	o.UpdatedAt.Valid = true
 
 	if err := o.doBeforeUpsertHooks(exec); err != nil {
 		return err
@@ -786,26 +986,14 @@ func (o *User) Upsert(exec boil.Executor, updateColumns []string, whitelist ...s
 		fmt.Fprintln(boil.DebugWriter, vals)
 	}
 
-	result, err := exec.Exec(cache.query, vals...)
-
+	_, err = exec.Exec(cache.query, vals...)
 	if err != nil {
 		return errors.Wrap(err, "models: unable to upsert for user")
 	}
 
-	var lastID int64
 	var identifierCols []interface{}
 
 	if len(cache.retMapping) == 0 {
-		goto CacheNoHooks
-	}
-
-	lastID, err = result.LastInsertId()
-	if err != nil {
-		return ErrSyncFail
-	}
-
-	o.ID = int(lastID)
-	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == userMapping["ID"] {
 		goto CacheNoHooks
 	}
 
@@ -1078,7 +1266,7 @@ func (o *UserSlice) ReloadAll(exec boil.Executor) error {
 }
 
 // UserExists checks if the User row exists.
-func UserExists(exec boil.Executor, id int) (bool, error) {
+func UserExists(exec boil.Executor, id string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from `user` where `id`=? limit 1)"
 
@@ -1098,12 +1286,12 @@ func UserExists(exec boil.Executor, id int) (bool, error) {
 }
 
 // UserExistsG checks if the User row exists.
-func UserExistsG(id int) (bool, error) {
+func UserExistsG(id string) (bool, error) {
 	return UserExists(boil.GetDB(), id)
 }
 
 // UserExistsGP checks if the User row exists. Panics on error.
-func UserExistsGP(id int) bool {
+func UserExistsGP(id string) bool {
 	e, err := UserExists(boil.GetDB(), id)
 	if err != nil {
 		panic(boil.WrapErr(err))
@@ -1113,7 +1301,7 @@ func UserExistsGP(id int) bool {
 }
 
 // UserExistsP checks if the User row exists. Panics on error.
-func UserExistsP(exec boil.Executor, id int) bool {
+func UserExistsP(exec boil.Executor, id string) bool {
 	e, err := UserExists(exec, id)
 	if err != nil {
 		panic(boil.WrapErr(err))

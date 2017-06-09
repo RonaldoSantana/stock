@@ -12,7 +12,6 @@ func (app *Application) connectDB() error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {

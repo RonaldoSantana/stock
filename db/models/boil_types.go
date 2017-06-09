@@ -58,3 +58,9 @@ const (
 	TaxRateTypeValue   = "value"
 	TaxRateTypePercent = "percent"
 )
+
+// Enum values for user.status
+const (
+	UserStatusActive   = "active"
+	UserStatusDisabled = "disabled"
+)

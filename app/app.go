@@ -1,26 +1,28 @@
 package app
 
 import (
-	"os"
+	"database/sql"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"io/ioutil"
-	"database/sql"
-	
-	"github.com/gorilla/sessions"
-	"gopkg.in/yaml.v2"
-	"github.com/rmsj/stock/app/helpers"
-)
+	"os"
 
+	"github.com/gorilla/sessions"
+	"github.com/rmsj/stock/app/api"
+	"github.com/rmsj/stock/app/helper"
+	"gopkg.in/yaml.v2"
+)
 
 // Application is the main app
 type Application struct {
-	Env       	map[string]interface{}
-	Port      	string
-	Config    	string
-	Store   	*sessions.CookieStore
-	DB			*sql.DB
-	EmailClient *helpers.EmailClient
+	Env         map[string]interface{}
+	Port        string
+	Config      string
+	Routes      []Route
+	Store       *sessions.CookieStore
+	DB          *sql.DB
+	EmailClient *helper.EmailClient
+	API         api.API
 }
 
 func (app *Application) setDefaultGlobals() {
@@ -44,6 +46,7 @@ func (app *Application) setCookieStore() {
 	app.Store = store
 }
 
+// loads application config file
 func (app *Application) loadConfig() error {
 	b, err := ioutil.ReadFile(app.Config)
 	if err != nil {
@@ -61,6 +64,7 @@ func (app *Application) Run() {
 	if err := app.connectDB(); err != nil {
 		log.Fatal(err)
 	}
+	defer app.DB.Close()
 
 	app.setCookieStore()
 	app.setDefaultGlobals()
