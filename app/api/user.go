@@ -29,8 +29,6 @@ func (api *API) RegisterUser(writer http.ResponseWriter, request *http.Request, 
 		return
 	}
 
-	fmt.Printf("User: %t, %s", user, user)
-
 	exists, err := modelx.UserEmailInUse(api.DB, user.Email)
 	if err != nil {
 		api.WriteError(writer, http.StatusBadRequest, err.Error())
