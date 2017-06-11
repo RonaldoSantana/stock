@@ -8,8 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/julienschmidt/httprouter"
-	"github.com/rmsj/stock/app/api"
-	"github.com/rmsj/stock/app/helper"
+	"github.com/rmsj/stock/app/controllers"
 	"github.com/rmsj/stock/app/security"
 	"github.com/rmsj/stock/db/modelx"
 )
@@ -37,14 +36,6 @@ func (app *Application) setMiddleware() {
 // BaseMiddleware func
 func (app *Application) BaseMiddleware(handler httprouter.Handle) httprouter.Handle {
 	fn := func(wrt http.ResponseWriter, req *http.Request, params httprouter.Params) {
-		app.EmailClient = helper.NewEmailClient(app.Env["PostmarkAPIKey"].(string))
-
-		app.API = api.API{
-			Env:         app.Env,
-			DB:          app.DB,
-			EmailClient: helper.NewEmailClient(app.Env["PostmarkAPIKey"].(string)),
-		}
-
 		handler(wrt, req, params)
 	}
 	return httprouter.Handle(fn)
@@ -69,7 +60,7 @@ func (app *Application) AuthMiddleware(handler httprouter.Handle) httprouter.Han
 		token, err := request.ParseFromRequestWithClaims(req, extractor, &jwt.StandardClaims{}, keyFunc)
 
 		if err != nil || !token.Valid {
-			app.API.WriteError(wrt, http.StatusBadRequest, err.Error())
+			controllers.HTTPWriteError(wrt, http.StatusBadRequest, err.Error())
 			return
 		}
 
