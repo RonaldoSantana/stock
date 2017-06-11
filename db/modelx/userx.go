@@ -2,21 +2,25 @@ package modelx
 
 import (
 	"database/sql"
+	"errors"
 
-	"github.com/rmsj/ecart/app/security"
 	"github.com/rmsj/stock/db/models"
 	. "github.com/vattle/sqlboiler/queries/qm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserByEmailAndPassword finds a user by email and password
 func UserByEmailAndPassword(db *sql.DB, email string, password string) (user *models.User, err error) {
 
-	password, err = security.HashPassword(password)
+	user, err = models.Users(db, Where("email = ?", email)).One()
 	if err != nil {
 		return
 	}
 
-	user, err = models.Users(db, Where("email = ? AND password = ?", email, password)).One()
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return nil, errors.New("Invalid user name or password")
+	}
 
 	return
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/julienschmidt/httprouter"
+	"github.com/rmsj/stock/app/controllers"
 )
 
 // Route type
@@ -15,12 +16,18 @@ type Route struct {
 
 func (app *Application) getRoutes() []Route {
 
+	userCtl := controllers.NewUserController()
+	productCtl := controllers.NewProductController()
+
 	apiRoutes := []Route{
 
 		// signing and sign out route
-		Route{"Register", "POST", "/register", app.API.RegisterUser, APINoAuthMiddleware},
-		Route{"Login", "POST", "/login", app.API.Login, APINoAuthMiddleware},
-		Route{"GetUser", "GET", "/user", app.API.GetUser, APIAuthMiddleware},
+		Route{"Register", "POST", "/register", userCtl.Register, APINoAuthMiddleware},
+		Route{"Login", "POST", "/login", userCtl.Login, APINoAuthMiddleware},
+		// User routes
+		Route{"GetUser", "GET", "/user", userCtl.Get, APIAuthMiddleware},
+		// Product related routes
+		Route{"AddProduct", "POST", "/product", productCtl.Get, APIAuthMiddleware},
 	}
 
 	return createRoutes(apiRoutes)

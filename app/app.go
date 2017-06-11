@@ -8,21 +8,17 @@ import (
 	"os"
 
 	"github.com/gorilla/sessions"
-	"github.com/rmsj/stock/app/api"
-	"github.com/rmsj/stock/app/helper"
 	"gopkg.in/yaml.v2"
 )
 
 // Application is the main app
 type Application struct {
-	Env         map[string]interface{}
-	Port        string
-	Config      string
-	Routes      []Route
-	Store       *sessions.CookieStore
-	DB          *sql.DB
-	EmailClient *helper.EmailClient
-	API         api.API
+	Env    map[string]interface{}
+	Port   string
+	Config string
+	Routes []Route
+	Store  *sessions.CookieStore
+	DB     *sql.DB
 }
 
 func (app *Application) setDefaultGlobals() {

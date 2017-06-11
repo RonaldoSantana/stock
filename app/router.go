@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/rmsj/stock/app/controllers"
 )
 
 // NewRouter func
@@ -21,7 +22,7 @@ func (app *Application) NewRouter() (router *httprouter.Router) {
 
 		router.Handle(route.Method, route.Pattern, handler)
 	}
-	router.NotFound = http.HandlerFunc(app.API.NotFound)
+	router.NotFound = http.HandlerFunc(controllers.NotFound)
 	return
 }
 
