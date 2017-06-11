@@ -20,7 +20,10 @@ func (app *Application) getRoutes() []Route {
 		// signing and sign out route
 		Route{"Register", "POST", "/register", app.API.RegisterUser, APINoAuthMiddleware},
 		Route{"Login", "POST", "/login", app.API.Login, APINoAuthMiddleware},
+		// User routes
 		Route{"GetUser", "GET", "/user", app.API.GetUser, APIAuthMiddleware},
+		// Product related routes
+		Route{"AddProduct", "POST", "/product", app.API.GetUser, APIAuthMiddleware},
 	}
 
 	return createRoutes(apiRoutes)
