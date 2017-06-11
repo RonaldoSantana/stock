@@ -42,37 +42,42 @@ type sessionTokenResponse struct {
 	Token string `json:"sessionToken"`
 }
 
-// baseController type
-type baseController struct {
-	Env         map[string]interface{}
-	Session     *sessions.Session
-	DB          *sql.DB
-	EmailClient *helper.EmailClient
+var config map[string]interface{}
+var session *sessions.Session
+var db *sql.DB
+var email *helper.EmailClient
+
+// Initialize controllers
+func Initialize(envMap map[string]interface{}, appSession *sessions.Session, dataBase *sql.DB, mailClient *helper.EmailClient) {
+	config = envMap
+	session = appSession
+	db = dataBase
+	email = mailClient
 }
 
 // Index func
-func (bc *baseController) Index(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func Index(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	var status status
-	status.App = bc.Env["App"].(string)
-	status.Version = bc.Env["Version"].(string)
-	httpWrite(writer, request, status, http.StatusOK)
+	status.App = config["App"].(string)
+	status.Version = config["Version"].(string)
+	write(writer, request, status, http.StatusOK)
 }
 
 // writer
-func httpWrite(writer http.ResponseWriter, request *http.Request, body interface{}, code int) {
-	err := bc.Session.Save(request, writer)
+func write(writer http.ResponseWriter, request *http.Request, body interface{}, code int) {
+	err := session.Save(request, writer)
 	if err != nil {
 		log.Println(err)
-		HTTPError(writer, http.StatusBadRequest)
+		Error(writer, http.StatusBadRequest)
 		return
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.Header().Set("Access-Control-Expose-Headers", "X-API-Version")
-	writer.Header().Set("X-API-Version", bc.Env["APIVersion"].(string))
+	writer.Header().Set("X-API-Version", config["APIVersion"].(string))
 
-	if _, exists := bc.Env["Location"]; exists {
-		writer.Header().Set("Location", bc.Env["Location"].(string))
+	if _, exists := config["Location"]; exists {
+		writer.Header().Set("Location", config["Location"].(string))
 	}
 
 	writer.WriteHeader(code)
@@ -91,8 +96,8 @@ func httpWrite(writer http.ResponseWriter, request *http.Request, body interface
 	}
 }
 
-// HTTPError func
-func HTTPError(writer http.ResponseWriter, code int) {
+// Error func
+func Error(writer http.ResponseWriter, code int) {
 	writer.WriteHeader(code)
 	if err := json.NewEncoder(writer).Encode(jsonStatus{Code: code, Text: http.StatusText(code)}); err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
@@ -101,20 +106,20 @@ func HTTPError(writer http.ResponseWriter, code int) {
 	}
 }
 
-// HTTPWriteJSON func
-func HTTPWriteJSON(writer http.ResponseWriter, status int, response interface{}) error {
+// WriteJSON func
+func WriteJSON(writer http.ResponseWriter, status int, response interface{}) error {
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(status)
 	return json.NewEncoder(writer).Encode(response)
 }
 
-// HTTPWriteError func
-func HTTPWriteError(writer http.ResponseWriter, status int, response interface{}) error {
-	return HTTPWriteJSON(writer, status, errorResponse{Error: response.(string)})
+// WriteError func
+func WriteError(writer http.ResponseWriter, status int, response interface{}) error {
+	return WriteJSON(writer, status, errorResponse{Error: response.(string)})
 }
 
 // HTTPNotFound func
-func HTTPNotFound(wrt http.ResponseWriter, req *http.Request) {
+func NotFound(wrt http.ResponseWriter, req *http.Request) {
 	wrt.WriteHeader(http.StatusNotFound)
-	httpWrite(wrt, req, "errors/404", http.StatusNotFound)
+	write(wrt, req, "errors/404", http.StatusNotFound)
 }

@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	"log"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rmsj/stock/app/controllers"
+	"github.com/rmsj/stock/app/helper"
 	"github.com/rmsj/stock/app/security"
 	"github.com/rmsj/stock/db/modelx"
 )
@@ -36,6 +39,17 @@ func (app *Application) setMiddleware() {
 // BaseMiddleware func
 func (app *Application) BaseMiddleware(handler httprouter.Handle) httprouter.Handle {
 	fn := func(wrt http.ResponseWriter, req *http.Request, params httprouter.Params) {
+
+		// initialize controllers variables
+		session, err := app.Store.Get(req, "session")
+		if err != nil {
+			log.Println(err)
+			unauthorizedHandler(wrt, req)
+			return
+		}
+
+		controllers.Initialize(app.Env, session, app.DB, helper.NewEmailClient(app.Env["PostmarkAPIKey"].(string)))
+
 		handler(wrt, req, params)
 	}
 	return httprouter.Handle(fn)
@@ -60,7 +74,7 @@ func (app *Application) AuthMiddleware(handler httprouter.Handle) httprouter.Han
 		token, err := request.ParseFromRequestWithClaims(req, extractor, &jwt.StandardClaims{}, keyFunc)
 
 		if err != nil || !token.Valid {
-			controllers.HTTPWriteError(wrt, http.StatusBadRequest, err.Error())
+			controllers.WriteError(wrt, http.StatusBadRequest, err.Error())
 			return
 		}
 
